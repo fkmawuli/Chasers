@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "350617135839",
+    "firebase_url": "https://chasers-de2c8.firebaseio.com",
+    "project_id": "chasers-de2c8",
+    "storage_bucket": "chasers-de2c8.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:350617135839:android:85502bbebdb3bcc5",
+        "android_client_info": {
+          "package_name": "com.example.mawuli.chasers"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "350617135839-dpnpvusig0k1q2kn3kmk1hfjdhjhj8c8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.mawuli.chasers",
+            "certificate_hash": "AEBFD84292B863CE4012000BCC6A8042E8B0B82B"
+          }
+        },
+        {
+          "client_id": "350617135839-v6vp72bn0548anumcflqnkpateh9356i.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAgZZZM92nq396Z6b81N3M0U-87y5kIqlo"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "350617135839-v6vp72bn0548anumcflqnkpateh9356i.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
