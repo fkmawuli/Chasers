@@ -7,12 +7,12 @@ import android.support.v4.app.FragmentStatePagerAdapter;
 
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
-    int tabCount;
+    int tabCount = 4;
 
     public ViewPagerAdapter(FragmentManager fm) {
         super(fm);
 
-        this.tabCount = tabCount;
+
     }
 
     @Override
@@ -38,6 +38,7 @@ public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
+
         return tabCount;
     }
 }

@@ -11,9 +11,14 @@ import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
+
+import com.soundcloud.android.crop.Crop;
+
+import java.io.File;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -90,49 +95,44 @@ public class PictureActivity extends AppCompatActivity {
         }
     }
 
-    private void startPickerIntent() {
-        Intent galleryIntent = new Intent(Intent.ACTION_PICK,
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-        // Start the Intent
-        startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-    }
+
+
+       private void startPickerIntent() {
+           Crop.pickImage(this);
+        }
+
+
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        try {
+        //super.onActivityResult(requestCode, resultCode, data);
+
             // When an Image is picked
-            if (requestCode == RESULT_LOAD_IMG && resultCode == RESULT_OK
-                    && null != data) {
+            if (requestCode == Crop.REQUEST_PICK && resultCode == RESULT_OK) {
+               beginCrop(data.getData());
                 // Get the Image from data
 
-                Uri selectedImage = data.getData();
-                this.selectedImage=selectedImage.toString();
 
-                String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-                // Get the cursor
-                Cursor cursor = getContentResolver().query(selectedImage,
-                        filePathColumn, null, null, null);
-                // Move to first row
-                cursor.moveToFirst();
-
-                int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-                imgDecodableString = cursor.getString(columnIndex);
-                cursor.close();
-                circleImageView.setImageBitmap(BitmapFactory
-                        .decodeFile(imgDecodableString));
-
-            } else {
-                Toast.makeText(this, "You haven't picked an Image",
-                        Toast.LENGTH_LONG).show();
+            } else if (requestCode == Crop.REQUEST_CROP){
+                handleCrop(resultCode,data);
             }
-        } catch (Exception e) {
-            Toast.makeText(this, "Something went wrong", Toast.LENGTH_LONG)
-                    .show();
-        }
+
 
     }
+    private void beginCrop(Uri source){
+        Uri destination = Uri.fromFile(new File(getCacheDir(),"cropped"));
+        Crop.of(source,destination).asSquare().start(this);
+    }
+
+    private void handleCrop(int resultCode, Intent result){
+        if (resultCode == RESULT_OK){
+            selectedImage =Crop.getOutput(result).toString();
+            circleImageView.setImageURI(Crop.getOutput(result));
+        }else if (resultCode == Crop.RESULT_ERROR){
+            Toast.makeText(this,Crop.getError(result).getMessage(),Toast.LENGTH_SHORT).show();
+        }
+    }
+
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);

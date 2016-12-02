@@ -1,8 +1,8 @@
 <application>
   <component name="FileTypeManager" version="16">
     <extensionMap>
-      <mapping pattern="row_layout" type="XML" />
       <mapping pattern="round_button" type="XML" />
+      <mapping pattern="row_layout" type="XML" />
       <mapping pattern="toolbar_with_logo" type="XML" />
     </extensionMap>
   </component>

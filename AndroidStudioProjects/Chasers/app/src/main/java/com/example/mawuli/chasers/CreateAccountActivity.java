@@ -1,5 +1,6 @@
 package com.example.mawuli.chasers;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -31,9 +32,9 @@ public class CreateAccountActivity extends AppCompatActivity{
     private EditText inputEmail, inputPassword;
     private Button btnCreateAccount, btnSignIn, btnResetPassword;
     private CircleImageView circleImageView;
-    private Bitmap bitmap;
     private String imagePath;
     private ProgressBar createAccountProgressBar;
+    private Context context;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,6 +42,7 @@ public class CreateAccountActivity extends AppCompatActivity{
         setContentView(R.layout.activity_create_account);
 
         firebaseAuth = FirebaseAuth.getInstance();
+        context = this;
 
         btnCreateAccount = (Button) findViewById(R.id.btn_create_Account);
         btnSignIn = (Button) findViewById(R.id.sign_up_button) ;
@@ -55,24 +57,21 @@ public class CreateAccountActivity extends AppCompatActivity{
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreateAccountActivity.this, ResetPasswordActivity.class));
+                startActivity(new Intent(context, ResetPasswordActivity.class));
             }
         });
 
         btnSignIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                startActivity(new Intent(CreateAccountActivity.this,LoginActivity.class));
+                startActivity(new Intent(context,LoginActivity.class));
             }
         });
 
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
                 createAccount();
-
-
             }
         });
 
@@ -80,19 +79,8 @@ public class CreateAccountActivity extends AppCompatActivity{
        circleImageView = (CircleImageView) findViewById(R.id.profile_image);
 
         imagePath = getIntent().getStringExtra("uploadImage");
-        String[] filePathColumn = { MediaStore.Images.Media.DATA };
-
-        // Get the cursor
-       Cursor cursor = getContentResolver().query(Uri.parse(imagePath),
-                filePathColumn, null, null, null);
-        // Move to first row
-        cursor.moveToFirst();
-
-      int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-       String imgDecodableString = cursor.getString(columnIndex);
-
-        circleImageView.setImageBitmap(BitmapFactory
-               .decodeFile(imgDecodableString));
+        Uri uri = Uri.parse(imagePath);
+        circleImageView.setImageURI(uri);
        //End of Code to display Image in Circular view
 
 
@@ -100,6 +88,7 @@ public class CreateAccountActivity extends AppCompatActivity{
     }
 
     private void createAccount() {
+        createAccountProgressBar.setVisibility(View.VISIBLE);
 
         String email = inputEmail.getText().toString().trim();
         String password = inputPassword.getText().toString().trim();
@@ -126,27 +115,29 @@ public class CreateAccountActivity extends AppCompatActivity{
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        createAccountProgressBar.setVisibility(View.VISIBLE);
+                        createAccountProgressBar.setVisibility(View.GONE);
 
                         if (task.isSuccessful()){
-                            Toast.makeText(CreateAccountActivity.this,"Account Created Successfully",
-                                    Toast.LENGTH_SHORT).show();
-                            Intent loginIntent = new Intent(CreateAccountActivity.this,LoginActivity.class);
+                            Toast.makeText(CreateAccountActivity.this,"Account Created Successfully", Toast.LENGTH_SHORT).show();
+                            Intent loginIntent = new Intent(context,LoginSucess.class);
                             startActivity(loginIntent);
+                            finish();
                         }
                         else {
                             Log.e("Error",task.getException().toString());
                             Toast.makeText(CreateAccountActivity.this,task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
 
+
                         }
                     }
                 });
+
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        createAccountProgressBar.setVisibility(View.GONE);
+       createAccountProgressBar.setVisibility(View.GONE);
     }
 }
