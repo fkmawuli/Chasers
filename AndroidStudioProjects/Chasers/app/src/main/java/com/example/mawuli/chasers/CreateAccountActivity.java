@@ -1,6 +1,5 @@
 package com.example.mawuli.chasers;
 
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -15,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -33,6 +33,7 @@ public class CreateAccountActivity extends AppCompatActivity{
     private CircleImageView circleImageView;
     private Bitmap bitmap;
     private String imagePath;
+    private ProgressBar createAccountProgressBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,10 +43,14 @@ public class CreateAccountActivity extends AppCompatActivity{
         firebaseAuth = FirebaseAuth.getInstance();
 
         btnCreateAccount = (Button) findViewById(R.id.btn_create_Account);
-        btnSignIn = (Button) findViewById(R.id.sign_in_button) ;
+        btnSignIn = (Button) findViewById(R.id.sign_up_button) ;
         btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
+
+        //seeting progres Bar
+        createAccountProgressBar = (ProgressBar) findViewById(R.id.progressBar);
+        createAccountProgressBar.setVisibility(View.GONE);
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -64,68 +69,84 @@ public class CreateAccountActivity extends AppCompatActivity{
         btnCreateAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String email = inputEmail.getText().toString().trim();
-                String password = inputPassword.getText().toString().trim();
 
-                if (TextUtils.isEmpty(email)){
-                    Toast.makeText(getApplicationContext(), "Enter email address!",Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (TextUtils.isEmpty(password)){
-                    Toast.makeText(getApplicationContext(),"Enter password!",Toast.LENGTH_LONG).show();
-                    return;
-                }
-
-                if (password.length() < 6){
-                    Toast.makeText(getApplicationContext(),"Password is too short",Toast.LENGTH_LONG).show();
-                    return;
-                }
-                firebaseAuth.createUserWithEmailAndPassword(email,password)
-                        .addOnCompleteListener(CreateAccountActivity.this, new OnCompleteListener<AuthResult>() {
-
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Toast.makeText(CreateAccountActivity.this,"createUserWithEmail:onComplete:" +
-                                task.isSuccessful(),Toast.LENGTH_LONG).show();
+                createAccount();
 
 
-                                if (!task.isSuccessful()){
-                                    Log.e("Error",task.getException().toString());
-                                }
-                                else {
-                                    startActivity(new Intent(CreateAccountActivity.this,LoginActivity.class));
-                                    finish();
-
-                                }
-                            }
-                        });
             }
         });
 
-        //Code to display Image in Circular view
-        circleImageView = (CircleImageView) findViewById(R.id.profile_image);
+       //Code to display Image in Circular view
+       circleImageView = (CircleImageView) findViewById(R.id.profile_image);
 
         imagePath = getIntent().getStringExtra("uploadImage");
         String[] filePathColumn = { MediaStore.Images.Media.DATA };
 
         // Get the cursor
-        Cursor cursor = getContentResolver().query(Uri.parse(imagePath),
+       Cursor cursor = getContentResolver().query(Uri.parse(imagePath),
                 filePathColumn, null, null, null);
         // Move to first row
         cursor.moveToFirst();
 
-        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
-        String imgDecodableString = cursor.getString(columnIndex);
-        cursor.close();
+      int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+       String imgDecodableString = cursor.getString(columnIndex);
+
         circleImageView.setImageBitmap(BitmapFactory
-                .decodeFile(imgDecodableString));
-        //End of Code to display Image in Circular view
+               .decodeFile(imgDecodableString));
+       //End of Code to display Image in Circular view
 
 
 
     }
 
+    private void createAccount() {
+
+        String email = inputEmail.getText().toString().trim();
+        String password = inputPassword.getText().toString().trim();
+
+        if (TextUtils.isEmpty(email)){
+            Toast.makeText(getApplicationContext(), "Enter email address!",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (TextUtils.isEmpty(password)){
+            Toast.makeText(getApplicationContext(),"Enter password!",Toast.LENGTH_LONG).show();
+            return;
+        }
+
+        if (password.length() < 6){
+            Toast.makeText(getApplicationContext(),"Password is too short",Toast.LENGTH_LONG).show();
+            return;
+        }
 
 
+
+        firebaseAuth.createUserWithEmailAndPassword(email,password)
+                .addOnCompleteListener(CreateAccountActivity.this, new OnCompleteListener<AuthResult>() {
+
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        createAccountProgressBar.setVisibility(View.VISIBLE);
+
+                        if (task.isSuccessful()){
+                            Toast.makeText(CreateAccountActivity.this,"Account Created Successfully",
+                                    Toast.LENGTH_SHORT).show();
+                            Intent loginIntent = new Intent(CreateAccountActivity.this,LoginActivity.class);
+                            startActivity(loginIntent);
+                        }
+                        else {
+                            Log.e("Error",task.getException().toString());
+                            Toast.makeText(CreateAccountActivity.this,task.getException().getMessage(),
+                                    Toast.LENGTH_SHORT).show();
+
+                        }
+                    }
+                });
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        createAccountProgressBar.setVisibility(View.GONE);
+    }
 }
