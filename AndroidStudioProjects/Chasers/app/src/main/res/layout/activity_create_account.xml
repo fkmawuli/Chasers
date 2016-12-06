@@ -113,20 +113,10 @@
                 android:background="@drawable/create_account_button"
                 android:id="@+id/btn_create_Account" />
 
-
-            <ProgressBar
-                android:layout_gravity="center"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:id="@+id/progressBar"
-                android:background="@android:color/black"
-                />
-
         </FrameLayout>
 
-
         <Button
-            android:id="@+id/btn_reset_password"
+            android:id="@+id/btn_forget_password"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/btn_forgot_password"
@@ -138,12 +128,12 @@
             android:layout_centerHorizontal="true"
             android:textAllCaps="false"/>
         <Button
-            android:id="@+id/sign_up_button"
+            android:id="@+id/create_account"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@null"
             android:textAllCaps="false"
-            android:layout_below="@+id/btn_reset_password"
+            android:layout_below="@+id/btn_forget_password"
             android:textColor="@color/colorAccent"
             android:text="@string/btn_link_to_login"
             android:layout_marginTop="0.2dp" />

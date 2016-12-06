@@ -1,0 +1,12 @@
+<application>
+  <component name="FindRecents">
+    <findStrings>
+      <find>ChasersH</find>
+      <find>setVisibility</find>
+      <find>progress</find>
+      <find>prog</find>
+      <find>progressBar</find>
+      <find>.show</find>
+    </findStrings>
+  </component>
+</application>

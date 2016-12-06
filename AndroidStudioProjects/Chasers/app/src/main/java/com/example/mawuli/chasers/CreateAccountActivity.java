@@ -1,23 +1,25 @@
 package com.example.mawuli.chasers;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
-import android.provider.MediaStore;
+import android.preference.PreferenceManager;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ProgressBar;
 import android.widget.Toast;
 
+import com.example.mawuli.chasers.util.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
@@ -33,8 +35,9 @@ public class CreateAccountActivity extends AppCompatActivity{
     private Button btnCreateAccount, btnSignIn, btnResetPassword;
     private CircleImageView circleImageView;
     private String imagePath;
-    private ProgressBar createAccountProgressBar;
     private Context context;
+    private ProgressDialog progressDialog;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,14 +48,14 @@ public class CreateAccountActivity extends AppCompatActivity{
         context = this;
 
         btnCreateAccount = (Button) findViewById(R.id.btn_create_Account);
-        btnSignIn = (Button) findViewById(R.id.sign_up_button) ;
-        btnResetPassword = (Button) findViewById(R.id.btn_reset_password);
+        btnSignIn = (Button) findViewById(R.id.create_account) ;
+        btnResetPassword = (Button) findViewById(R.id.btn_forget_password);
         inputEmail = (EditText) findViewById(R.id.email);
         inputPassword = (EditText) findViewById(R.id.password);
 
-        //seeting progres Bar
-        createAccountProgressBar = (ProgressBar) findViewById(R.id.progressBar);
-        createAccountProgressBar.setVisibility(View.GONE);
+        progressDialog = new ProgressDialog(this);
+        progressDialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+
 
         btnResetPassword.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -68,12 +71,15 @@ public class CreateAccountActivity extends AppCompatActivity{
             }
         });
 
-        btnCreateAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                createAccount();
-            }
-        });
+
+
+            btnCreateAccount.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    createAccount();
+                }
+            });
 
        //Code to display Image in Circular view
        circleImageView = (CircleImageView) findViewById(R.id.profile_image);
@@ -83,15 +89,20 @@ public class CreateAccountActivity extends AppCompatActivity{
         circleImageView.setImageURI(uri);
        //End of Code to display Image in Circular view
 
-
-
     }
 
-    private void createAccount() {
-        createAccountProgressBar.setVisibility(View.VISIBLE);
 
-        String email = inputEmail.getText().toString().trim();
+
+    private void createAccount() {
+
+        if (!Helper.isNetworkAvailable(context)){
+            Toast.makeText(this,"Network is not available",Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+       final String email = inputEmail.getText().toString().trim();
         String password = inputPassword.getText().toString().trim();
+
 
         if (TextUtils.isEmpty(email)){
             Toast.makeText(getApplicationContext(), "Enter email address!",Toast.LENGTH_LONG).show();
@@ -110,14 +121,16 @@ public class CreateAccountActivity extends AppCompatActivity{
 
 
 
+
         firebaseAuth.createUserWithEmailAndPassword(email,password)
                 .addOnCompleteListener(CreateAccountActivity.this, new OnCompleteListener<AuthResult>() {
 
                     @Override
                     public void onComplete(@NonNull Task<AuthResult> task) {
-                        createAccountProgressBar.setVisibility(View.GONE);
 
                         if (task.isSuccessful()){
+                            PreferenceManager.getDefaultSharedPreferences(context).edit().putString("email",email).apply();
+
                             Toast.makeText(CreateAccountActivity.this,"Account Created Successfully", Toast.LENGTH_SHORT).show();
                             Intent loginIntent = new Intent(context,LoginSucess.class);
                             startActivity(loginIntent);
@@ -127,17 +140,10 @@ public class CreateAccountActivity extends AppCompatActivity{
                             Log.e("Error",task.getException().toString());
                             Toast.makeText(CreateAccountActivity.this,task.getException().getMessage(),
                                     Toast.LENGTH_SHORT).show();
-
-
+                            progressDialog.dismiss();
                         }
                     }
                 });
-
     }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-       createAccountProgressBar.setVisibility(View.GONE);
-    }
 }
