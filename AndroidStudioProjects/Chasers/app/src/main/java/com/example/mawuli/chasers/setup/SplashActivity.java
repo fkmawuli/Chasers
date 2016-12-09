@@ -1,13 +1,16 @@
-package com.example.mawuli.chasers;
+package com.example.mawuli.chasers.setup;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
 
+import com.example.mawuli.chasers.ChasersHomeActivity;
+import com.example.mawuli.chasers.R;
+import com.example.mawuli.chasers.util.User;
+
+import io.realm.Realm;
 
 
 public class SplashActivity extends AppCompatActivity {
@@ -19,12 +22,16 @@ public class SplashActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String email = PreferenceManager.getDefaultSharedPreferences(this).getString("email","");
-         if (!email.isEmpty()){
-             startActivity(new Intent(SplashActivity.this,ChasersHomeActivity.class));
-             finish();
-             return;
-         }
+
+        Realm realm = Realm.getDefaultInstance();
+        final User user = realm.where(User.class).findFirst();
+
+        if (user != null){
+            startActivity(new Intent(SplashActivity.this,ChasersHomeActivity.class));
+            finish();
+            return;
+        }
+
 
         setContentView(R.layout.activity_splash);
 

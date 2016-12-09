@@ -5,6 +5,11 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import com.example.mawuli.chasers.fragment.FlagFragment;
+import com.example.mawuli.chasers.fragment.HomeFragment;
+import com.example.mawuli.chasers.fragment.NotificationFragment;
+import com.example.mawuli.chasers.fragment.ProfileFragment;
+
 public class ViewPagerAdapter extends FragmentStatePagerAdapter {
 
     int tabCount = 4;

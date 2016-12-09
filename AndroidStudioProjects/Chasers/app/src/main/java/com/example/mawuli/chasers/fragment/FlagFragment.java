@@ -1,20 +1,24 @@
-package com.example.mawuli.chasers;
+package com.example.mawuli.chasers.fragment;
 
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
+
+import com.example.mawuli.chasers.R;
 
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class NotificationFragment extends Fragment {
+public class FlagFragment extends Fragment {
 
 
-    public NotificationFragment() {
+    public FlagFragment() {
         // Required empty public constructor
     }
 
@@ -23,7 +27,7 @@ public class NotificationFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_notification, container, false);
+        return inflater.inflate(R.layout.fragment_flag, container, false);
     }
 
 }

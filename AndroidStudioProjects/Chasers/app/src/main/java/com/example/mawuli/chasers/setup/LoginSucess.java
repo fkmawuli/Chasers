@@ -1,4 +1,4 @@
-package com.example.mawuli.chasers;
+package com.example.mawuli.chasers.setup;
 
 import android.content.Context;
 import android.content.Intent;
@@ -6,6 +6,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+
+import com.example.mawuli.chasers.ChasersHomeActivity;
+import com.example.mawuli.chasers.R;
 
 public class LoginSucess extends AppCompatActivity {
 

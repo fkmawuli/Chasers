@@ -1,4 +1,4 @@
-package com.example.mawuli.chasers;
+package com.example.mawuli.chasers.setup;
 
 import android.Manifest;
 import android.content.Intent;
@@ -12,6 +12,7 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.widget.Toast;
 
+import com.example.mawuli.chasers.R;
 import com.soundcloud.android.crop.Crop;
 
 import java.io.File;

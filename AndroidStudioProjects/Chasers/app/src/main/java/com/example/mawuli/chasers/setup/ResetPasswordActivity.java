@@ -1,4 +1,4 @@
-package com.example.mawuli.chasers;
+package com.example.mawuli.chasers.setup;
 
 import android.app.ProgressDialog;
 import android.support.annotation.NonNull;
@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.Toast;
 
+import com.example.mawuli.chasers.R;
 import com.example.mawuli.chasers.util.Helper;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -60,7 +61,7 @@ public class ResetPasswordActivity extends AppCompatActivity {
 
     private void resetPassword() {
 
-        if (Helper.isNetworkAvailable(this)){
+        if (!Helper.isNetworkAvailable(this)){
             Toast.makeText(this,"Network is not available",Toast.LENGTH_SHORT).show();
             return;
         }
